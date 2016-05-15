@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <title>Greedy Trackc</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src ='/static/js/jquery-2.1.4.js'></script>
+    <script src ='/static/js/bootstrap.min.js'></script>
+    <script src ='/static/js/angular.min.js'></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <script>
+        $(document).ready(function(){
+                 console.log("In track.html");
+
+                  $('#search_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("search_btn_clicked");
+                    form_data = $('#search_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/search/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        var tracks_html = res_data['tracks_html']
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+                                             $('#search_results_div').html(tracks_html)
+
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+                                         }
+                               }
+
+                    });
+
+
+                 })
+
+
+
+
+                  $('.save_genre_btn').click(function(e){
+                    console.log('in save track btn');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    //genre_edit_div.addClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    //genre_info_div.removeClass('hide');
+                    genre_name_div = genre_info_div.find('genre_name_div')
+                    form_data = genre_edit_div.find('.edit_genre_form').serializeArray();
+                    console.log(form_data)
+                    console.log(form_data[0].value)
+                    new_track_name = form_data[0].value
+                    new_track_ratings = form_data[2].value
+                    url = "/greedymusic/editTrack/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+                                             alert(message)
+                                             genre_edit_div.addClass('hide')
+                                             genre_info_div.removeClass('hide')
+                                             track_name_div = genre_info_div.find('.track_name_div_span')
+                                             track_ratings_div = genre_info_div.find('.track_ratings_div')
+                                             track_name_div.html(new_track_name)
+                                             track_ratings_div.html(new_track_ratings)
+
+                                             //window.location.replace("/greedymusic/genres/")
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+                 })
+
+                 $('.cancel_genre_btn').click(function(e){
+                    console.log('in cancel genre btn');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    genre_edit_div.addClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    genre_info_div.removeClass('hide');
+                 })
+
+                 $('.edit_genre_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("edit_genre_btn_clicked");
+                    genre_id = $(this).data('id');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    genre_edit_div.removeClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    genre_info_div.addClass("hide")
+                    console.log("Genre_id:");
+                    console.log(genre_id);
+                    //$('.genre_info_div').addclass("hide");
+                    //$('.genre_edit_div').removeclass("hide");
+
+                   });
+
+                 //Adding new Track
+                 $('#add_genre_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("add_genre_btn_clicked")
+                    form_data = $('#add_genre_form').serializeArray()
+                    console.log(form_data)
+                    //var file = $('#music_track').get(0).files[0];
+                    //var formData = new FormData();
+                    //formData.append('music_track', $('input[type=file]')[0].files[0]);
+                    //console.log("file")
+                    //console.log(file)
+                    //console.log("after adding file data")
+                    //console.log(formData)
+                    url = "/greedymusic/addTrack/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == Trueee111 \n");
+                                             alert(message)
+                                             window.location.replace("/greedymusic/tracks/")
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+
+ $('#sign_in_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("sign_in_btn_clicked")
+                    form_data = $('#signin_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/login/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                 })
+
+                })
+
+                 $('#sign_in_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("sign_in_btn_clicked")
+                    form_data = $('#signin_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/login/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                 })
+
+                $('#sign_up_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("sign_up_btn_clicked")
+                    form_data = $('#signup_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/register/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+                                             var updateErrorMsg = savedTaskForm + " #update-prtcptn-error-msg";
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                })
+
+                //add new genre
+                $('#add_new_genre_div').on('click', '#add_new_genre_btn', function(e){
+                        e.preventDefault();
+                        console.log("In add_new_genre_div \n");
+                        return
+                        var t_id=$(this).data('id');
+                        console.log("t_id " + t_id );
+                        var savedTaskBox="#saved-task-box-" + t_id;
+                        var savedTaskFormOuter="#saved-task-form-outer-" + t_id;
+                        var savedTaskForm="#saved-task-form-" + t_id;
+                        console.log("savedTaskForm" + savedTaskForm)
+                        var url="/ts_app/update_target/" ;
+                        console.log("URL :" + url);
+                        var datastring = $(savedTaskForm).serializeArray();
+                        console.log("DataString: " + datastring);
+
+
+                        $.ajax({
+                                   url : url,
+                                   type : "POST",
+                                   data : datastring,
+                                   dataType : "json",
+                                   success:function(res_data){
+                                            console.log(res_data);
+                                            var success = res_data['success'];
+                                            var message = res_data['message'];
+                                            console.log("success: " + success);
+                                            console.log("message: " + message);
+                                            if(success)
+                                            {
+                                                 $(savedTaskFormOuter).addClass('hide');
+                                                 $('#add-task-btn').removeClass('hide');
+                                                 console.log("apoorv");
+                                                 console.log("T_id " + t_id );
+                                                 $('#saved-task-boxes').html(res_data['target_box']);
+                                                 var savedTaskMsgBox= savedTaskBox + " .task-msg";
+                                                 var savedTaskCol= savedTaskBox + " .task-msg-col";
+                                                 console.log("SAVEDTaskBox " + savedTaskMsgBox);
+                                                 console.log("SAVEDTaskCol " + savedTaskCol);
+                                                 $(savedTaskCol).addClass("alert alert-info");
+                                                 $(savedTaskMsgBox).append("<span class='sub-heading' style='padding:5px;'>" + "Participation Updated" +"</span>");
+                                                 var Msglink=savedTaskMsgBox +" a" ;
+                                                 $(Msglink).removeClass("hide");
+
+
+                                            }
+                                            else
+                                            {
+                                                  console.log("In success == false \n");
+                                                 var updateErrorMsg = savedTaskForm + " #update-prtcptn-error-msg";
+
+                                                 $(updateErrorMsg).html(message);
+
+                                            }
+
+                                         }
+                        });
+
+                });
+        })
+    </script>
+</head>
+
+<body>
+
+<!--Start of nav bar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Geedy Music</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#"  data-toggle="modal" data-target="#signup_signin">Singup/Login</a></li>
+          <li><a href="#">Login</a></li>
+
+        </ul>
+      </div>
+    </nav>
+<!--End  of nav bar-->
+
+
+
+
+
+    <div id = "container-fluid" id="genre_outermost_wrapper" style="margin-top:60px;" >
+
+        <!-- Singup/Sign InModal -->
+        <div class="modal fade modal-sm" id="signup_signin" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <br>
+                    <div class="example-tabs">
+                        <ul id="myTab" class="nav nav-tabs">
+                          <li class="active"><a href="#signin_div" data-toggle="tab">Sign In</a></li>
+                          <li class=""><a href="#signup_div" data-toggle="tab">Register</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="modal-body">
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade active in" id="signin_div">
+                                <form class="form-horizontal" name="signin_form" id="signin_form" >
+                                    {% csrf_token %}
+                                    <fieldset>
+                                    <!-- Sign In Form -->
+                                    <!-- Text input-->
+                                        <div class="control-group">
+                                          <label class="control-label" for="email_si">Email:</label>
+                                          <div class="controls">
+                                            <input required id="email_si" name="email_si" type="text" class="form-control" placeholder="JoeSixpack" class="input-medium">
+                                          </div>
+                                        </div>
+
+                                        <!-- Password input-->
+                                        <div class="control-group">
+                                          <label class="control-label" for="password_si">Password:</label>
+                                          <div class="controls">
+                                            <input required id="password_si" name="password_si" class="form-control" type="password" placeholder="********" class="input-medium">
+                                          </div>
+                                        </div>
+
+                                        <!-- Button -->
+                                        <div class="control-group">
+                                          <label class="control-label" for="signin"></label>
+                                          <div class="controls">
+                                            <button  name="signin" class="btn btn-success" id="sign_in_btn">Sign In</button>
+                                          </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="signup_div">
+                            <form class="form-horizontal" name="signup_form" id="signup_form">
+                                {% csrf_token %}
+                                <fieldset>
+                                <!-- Sign Up Form -->
+                                <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="email">Email:</label>
+                                      <div class="controls">
+                                        <input id="email" name="email" class="form-control" type="text" placeholder="JoeSixpack@sixpacksrus.com" class="input-large" required>
+                                      </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="user_name">Name:</label>
+                                      <div class="controls">
+                                        <input id="user_name" name="user_name" class="form-control" type="text" placeholder="JoeSixpack" class="input-large" required>
+                                      </div>
+                                    </div>
+
+                                    <!-- Password input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="password_su">Password:</label>
+                                      <div class="controls">
+                                        <input id="password_su" name="password_su" class="form-control" type="password" placeholder="********" class="input-large" required>
+                                        <em>1-8 Characters</em>
+                                      </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="password_re_su">Re-Enter Password:</label>
+                                      <div class="controls">
+                                        <input id="password_re_su" class="form-control" name="password_re_su" type="password" placeholder="********" class="input-large" required>
+                                      </div>
+                                    </div>
+
+
+                                    <br>
+                                    <!-- Button -->
+                                    <div class="control-group">
+                                      <label class="control-label" for="signup"></label>
+                                      <div class="controls">
+                                        <button type="button"  name="signup" class="btn btn-success" id="sign_up_btn">Sign Up</button>
+                                      </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                  <center>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </center>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Singup/Sign InModal -->
+
+
+        <!--Showing all Tracks-->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-4" align="center" style=";font-size: 35px;font-family: 'open sans', sans-serif;">
+                Tracks
+            </div>
+        </div>
+         <!--Search Form-->
+         <div class="row">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-4">
+                <form role="form" class="form-inline" id="search_form" style="margin-bottom:10px;" method="post" action="/greedymusic/search/">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="search_keyword" placeholder="tracks or genre">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-default" id="search_btn"> Search </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+         </div>
+         <!--End of Search Form-->
+         <div class="row">
+             <div class="col-md-12">
+                 <div id="search_results_div">
+
+                 </div>
+             </div>
+         </div>
+
+        <!--Showing all Tracks-->
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-8" id="genre_column">
+                {% if tracks %}
+                    {% for track in tracks %}
+                        <div class="row genre_box" style="height:55px;border:1px solid black" >
+                            <div class="genre_info_div">
+                                <div class="col-md-6 track_name_div" style=";font-size: 30px;font-family: 'Ubuntu', sans-serif" >
+                                    <a href="/greedymusic/track/{{ track.id }}">
+                                        <span class="track_name_div_span">
+                                            {{ track.music_title }}
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 track_ratings_div">
+                                    {{ track.ratings }}
+                                </div>
+                                <div class="col-md-4" style="padding:8px;">
+                                    {% if track.user == curr_user %}
+                                    <button type="button" class="btn btn-primary edit_genre_btn"  data-id="{{ genre.id }}" >Edit</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="genre_edit_div hide" style="background-color:rgba(255,0,0,0.1)">
+                                <!--<form class="edit_genre_form form-horizontal" role="form" >-->
+                                    <!--<div class="form-group">-->
+                                        <!--<div class="col-md-10">-->
+                                            <!--<input type="text" class="form-control" name="genre_name" value="{{ genre.genre_name }}">-->
+                                            <!--<input type="hidden" value="{{ genre.id }}" name="genre_id">-->
+                                        <!--</div>-->
+                                        <!--<div class="form-group">-->
+                                            <!--<div class="col-md-offset-2 col-md-10">-->
+                                                <!--<button type="button" class="btn btn-default save_genre_btn">Save </button>-->
+                                                <!--<button type="button" class="btn btn-default cancel_genre_btn">Cancel </button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</form>-->
+
+                                <form class="form-horizontal edit_genre_form" method="post" role="form" name="edit_genre_form" >
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label" for="music_title">Track Title</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" name="music_title" id="music_title" value="{{ track.music_title }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label" for="artist_name">Artist</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" name="artist_name" id="artist_name" value="{{ track.artist_name }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label" for="ratings">Ratings</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" name="ratings" id="ratings" value="{{ track.ratings }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label  class="col-md-2 control-label" for="ratings">Genre</label>
+                                        <div class="col-md-10">
+                                            <select name="genres" multiple>
+                                            {% for genre in genres %}
+                                                <option value="{{ genre.id }}">{{genre.genre_name }}</option>
+                                            {% endfor %}
+                                            </select>
+                                            <input type="hidden" value="{{ track.id }}" name="track_id">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-10">
+                                          <button type="button" class="btn btn-default save_genre_btn">Save </button>
+                                         <button type="button" class="btn btn-default cancel_genre_btn">Cancel </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+
+
+        </div>
+        <!-- End of Showing all Tracks-->
+
+        <!--Add a New Genre div-->
+        <div class="row" style="margin-bottom:10px;" id="add_new_genre_div">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-4" align="center">
+                <button type="button" class="btn btn-primary"  id="add_genre_modal_btn" data-toggle="modal" data-target="#add_genre_modal">
+                    Add New Track
+                </button>
+            </div>
+
+            <!--Modal for adding new track-->
+            <div id="add_genre_modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Add New Track</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" method="post" role="form" name="add_genre_form" id="add_genre_form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label  class="col-md-2 control-label" for="music_title">Track Title</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="music_title" id="music_title" placeholder="rock/edm"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-md-2 control-label" for="artist_name">Artist</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="artist_name" id="artist_name" placeholder="rock/edm"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label  class="col-md-2 control-label" for="ratings">Ratings</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="ratings" id="ratings" placeholder="rock/edm"/>
+                                    </div>
+                                </div>
+
+                                 <div class="form-group">
+                                    <label  class="col-md-2 control-label" for="ratings">Genre</label>
+                                    <div class="col-md-10">
+                                        <select name="genres" multiple>
+                                        {% for genre in genres %}
+                                            <option value="{{ genre.id }}">{{genre.genre_name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                 </div>
+
+                                 <div class="form-group">
+                                    <label  class="col-md-2 control-label" for="music_track">Track(audio file)</label>
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="file" name="music_track" id="music_track">
+                                    </div>
+                                 </div>
+
+                                 <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                      <button type="submit" class="btn btn-default" id="add_genre_btn">Add track</button>
+                                    </div>
+                                 </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End for Modal for adding new track-->
+        </div>
+        <!-- End of Add a New Genre div-->
+
+        <!-- Pagination-->
+        <div class="row">
+            <div class="col-md-offset-2 col-md-5" align="center">
+                <div class="pagination ">
+                    <span class="step-links" style="font-size: 20px;font-family: 'open sans', sans-serif;">
+                        {% if tracks.has_previous %}
+                            <a href="?page={{ tracks.previous_page_number }}">Previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ tracks.number }} of {{ tracks.paginator.num_pages }}.
+                        </span>
+
+                        {% if tracks.has_next %}
+                            <a href="?page={{ tracks.next_page_number }}">Next</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!--End of Pagination-->
+    </div>
+
+
+</body>
+</html>

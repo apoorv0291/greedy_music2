@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <title>Greedy Music</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src ='/static/js/jquery-2.1.4.js'></script>
+    <script src ='/static/js/bootstrap.min.js'></script>
+    <script src ='/static/js/angular.min.js'></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<!--Start of nav bar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Greedy Music</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#"  data-toggle="modal" data-target="#signup_signin">Singup/Login</a></li>
+          <li><a href="#">Login</a></li>
+
+        </ul>
+      </div>
+    </nav>
+<!--End  of nav bar-->
+    <div class="container-fluid" id="track_details_outermost_wrapper" style="margin-top:60px;">
+        <div class="row" >
+            <div class="col-md-9" >
+                <div style="margin-left:300px;margin-right:80px;margin-top:30px;font-size: 30px;font-family: 'Ubuntu', sans-serif">
+                    <div class="row" style="border:1px solid black">
+                        <div class="col-md-8" align="center">
+                            Genre Details
+                        </div>
+                    </div>
+                    {% if genre.music_track.all %}
+                    <!--short way-->
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-md-4">
+                                Track
+                            </div>
+                            <div class="col-md-4">
+                                Artist
+                            </div>
+                            <div class="col-md-4">
+                                Rating
+                            </div>
+                        </div>
+                        {% for track in genre.music_track.all %}
+                            <div class="row" style="border:1px solid black">
+                                <div class="col-md-4">
+                                    {{track.music_title}}
+                                </div>
+                                <div class="col-md-4">
+                                    {{track.artist_name}}
+                                </div>
+                                <div class="col-md-4">
+                                    {{track.ratings}}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    <!--end of short way-->
+
+                        <!--<div class="row" style="border:1px solid black">-->
+                            <!--<div class="col-md-3">-->
+                                <!--Title:-->
+                            <!--</div>-->
+                            <!--<div class="col-md-5">-->
+                                <!--{{ track.music_title }}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="row" style="border:1px solid black">-->
+                            <!--<div class="col-md-3">-->
+                                <!--Aritst:-->
+                            <!--</div>-->
+                            <!--<div class="col-md-5" >-->
+                                <!--{{ track.artist_name }}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="row" style="border:1px solid black">-->
+                            <!--<div class="col-md-3">-->
+                                <!--Ratings:-->
+                            <!--</div>-->
+                            <!--<div class="col-md-5">-->
+                                <!--{{ track.ratings }}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="row" style="border:1px solid black">-->
+                            <!--<div class="col-md-3">-->
+                                <!--Genres:-->
+                            <!--</div>-->
+                            <!--<div class="col-md-5">-->
+                                <!--{% for genre in track.genre.all %}-->
+                                    <!--{% if forloop.last %}-->
+                                    <!--{{ genre.genre_name }} &nbsp;&nbsp;-->
+                                    <!--{% else %}-->
+                                    <!--{{ genre.genre_name }},-->
+                                    <!--{% endif %}-->
+                                <!--{% endfor %}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    {% else %}
+
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-3">
+                                No such Tack/Genre
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

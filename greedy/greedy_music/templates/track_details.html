@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <title>Greedy Music</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src ='/static/js/jquery-2.1.4.js'></script>
+    <script src ='/static/js/bootstrap.min.js'></script>
+    <script src ='/static/js/angular.min.js'></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <script>
+        $(document).ready(function(){
+                 console.log("In track.html");
+                 $("forms#add_genre_form").submit(function(){
+
+                        console.log(" hhh form_Data");
+                        var formData = new FormData($('#add_genre_form')[0]);
+                        formData.append('music_track', $('input[type=file]')[0].files[0]);
+                        console.log(formData)
+
+                        $.ajax({
+                            url: window.location.pathname,
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            success: function (data) {
+                                alert(data)
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                        });
+
+                        return false;
+                    });
+
+                  $('.save_genre_btn').click(function(e){
+                    console.log('in save track btn');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    //genre_edit_div.addClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    //genre_info_div.removeClass('hide');
+                    genre_name_div = genre_info_div.find('genre_name_div')
+                    form_data = genre_edit_div.find('.edit_genre_form').serializeArray();
+                    console.log(form_data)
+                    console.log(form_data[0].value)
+                    new_track_name = form_data[0].value
+                    new_track_ratings = form_data[2].value
+                    url = "/greedymusic/editTrack/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+                                             alert(message)
+                                             genre_edit_div.addClass('hide')
+                                             genre_info_div.removeClass('hide')
+                                             track_name_div = genre_info_div.find('.track_name_div')
+                                             track_ratings_div = genre_info_div.find('.track_ratings_div')
+                                             track_name_div.html(new_track_name)
+                                             track_ratings_div.html(new_track_ratings)
+
+                                             //window.location.replace("/greedymusic/genres/")
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+                 })
+
+                 $('.cancel_genre_btn').click(function(e){
+                    console.log('in cancel genre btn');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    genre_edit_div.addClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    genre_info_div.removeClass('hide');
+                 })
+
+                 $('.edit_genre_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("edit_genre_btn_clicked");
+                    genre_id = $(this).data('id');
+                    genre_edit_div = $(this).closest('.genre_box').find('.genre_edit_div');
+                    genre_edit_div.removeClass('hide');
+                    genre_info_div = $(this).closest('.genre_box').find('.genre_info_div');
+                    genre_info_div.addClass("hide")
+                    console.log("Genre_id:");
+                    console.log(genre_id);
+                    //$('.genre_info_div').addclass("hide");
+                    //$('.genre_edit_div').removeclass("hide");
+
+                   });
+
+                 //Adding new Track
+                 $('#add_genre_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("add_genre_btn_clicked")
+                    form_data = $('#add_genre_form').serializeArray()
+                    console.log(form_data)
+                    //var file = $('#music_track').get(0).files[0];
+                    //var formData = new FormData();
+                    //formData.append('music_track', $('input[type=file]')[0].files[0]);
+                    //console.log("file")
+                    //console.log(file)
+                    //console.log("after adding file data")
+                    //console.log(formData)
+                    url = "/greedymusic/addTrack/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == Trueee111 \n");
+                                             alert(message)
+                                             window.location.replace("/greedymusic/tracks/")
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                })
+
+                 $('#sign_in_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("sign_in_btn_clicked")
+                    form_data = $('#signin_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/login/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                 })
+
+                $('#sign_up_btn').click(function(e){
+                    e.preventDefault();
+                    console.log("sign_up_btn_clicked")
+                    form_data = $('#signup_form').serializeArray()
+                    console.log(form_data)
+                    url = "/greedymusic/register/"
+                    $.ajax({
+                               url : url,
+                               type : "POST",
+                               data : form_data,
+                               dataType : "json",
+                               success:function(res_data){
+                                        console.log(res_data);
+                                        var success = res_data['success'];
+                                        var message = res_data['message'];
+                                        console.log("success: " + success);
+                                        console.log("message: " + message);
+                                        if(success)
+                                        {
+                                             console.log("In success == True \n");
+
+
+                                        }
+                                        else
+                                        {
+                                             console.log("In success == false \n");
+                                             var updateErrorMsg = savedTaskForm + " #update-prtcptn-error-msg";
+
+
+
+                                        }
+
+                                     }
+                    });
+
+
+                })
+
+                //add new genre
+                $('#add_new_genre_div').on('click', '#add_new_genre_btn', function(e){
+                        e.preventDefault();
+                        console.log("In add_new_genre_div \n");
+                        return
+                        var t_id=$(this).data('id');
+                        console.log("t_id " + t_id );
+                        var savedTaskBox="#saved-task-box-" + t_id;
+                        var savedTaskFormOuter="#saved-task-form-outer-" + t_id;
+                        var savedTaskForm="#saved-task-form-" + t_id;
+                        console.log("savedTaskForm" + savedTaskForm)
+                        var url="/ts_app/update_target/" ;
+                        console.log("URL :" + url);
+                        var datastring = $(savedTaskForm).serializeArray();
+                        console.log("DataString: " + datastring);
+
+
+                        $.ajax({
+                                   url : url,
+                                   type : "POST",
+                                   data : datastring,
+                                   dataType : "json",
+                                   success:function(res_data){
+                                            console.log(res_data);
+                                            var success = res_data['success'];
+                                            var message = res_data['message'];
+                                            console.log("success: " + success);
+                                            console.log("message: " + message);
+                                            if(success)
+                                            {
+                                                 $(savedTaskFormOuter).addClass('hide');
+                                                 $('#add-task-btn').removeClass('hide');
+                                                 console.log("apoorv");
+                                                 console.log("T_id " + t_id );
+                                                 $('#saved-task-boxes').html(res_data['target_box']);
+                                                 var savedTaskMsgBox= savedTaskBox + " .task-msg";
+                                                 var savedTaskCol= savedTaskBox + " .task-msg-col";
+                                                 console.log("SAVEDTaskBox " + savedTaskMsgBox);
+                                                 console.log("SAVEDTaskCol " + savedTaskCol);
+                                                 $(savedTaskCol).addClass("alert alert-info");
+                                                 $(savedTaskMsgBox).append("<span class='sub-heading' style='padding:5px;'>" + "Participation Updated" +"</span>");
+                                                 var Msglink=savedTaskMsgBox +" a" ;
+                                                 $(Msglink).removeClass("hide");
+
+
+                                            }
+                                            else
+                                            {
+                                                  console.log("In success == false \n");
+                                                 var updateErrorMsg = savedTaskForm + " #update-prtcptn-error-msg";
+
+                                                 $(updateErrorMsg).html(message);
+
+                                            }
+
+                                         }
+                        });
+
+                });
+        })
+    </script>
+</head>
+
+<body>
+
+<!--Start of nav bar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Greedy Music</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#"  data-toggle="modal" data-target="#signup_signin">Singup/Login</a></li>
+          <li><a href="#">Login</a></li>
+
+        </ul>
+      </div>
+    </nav>
+<!--End  of nav bar-->
+    <div class="container-fluid" id="track_details_outermost_wrapper" style="margin-top:60px;">
+        <div class="row" >
+            <div class="col-md-9" style="margin-right:60px">
+                <div style="margin-left:160px;margin-right:80px;margin-top:30px;font-size: 30px;font-family: 'Ubuntu', sans-serif">
+                    <div class="row" style="border:1px solid black">
+                            <div class="col-md-8" align="center">
+                                Track Details
+                            </div>
+                    </div>
+                    {% if track %}
+
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-md-3">
+                                Title:
+                            </div>
+                            <div class="col-md-5">
+                                {{ track.music_title }}
+                            </div>
+                        </div>
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-md-3">
+                                Aritst:
+                            </div>
+                            <div class="col-md-5" >
+                                {{ track.artist_name }}
+                            </div>
+                        </div>
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-md-3">
+                                Ratings:
+                            </div>
+                            <div class="col-md-5">
+                                {{ track.ratings }}
+                            </div>
+                        </div>
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-md-3">
+                                Genres:
+                            </div>
+                            <div class="col-md-5">
+                                {% for genre in track.genre.all %}
+                                    {% if forloop.last %}
+                                    {{ genre.genre_name }} &nbsp;&nbsp;
+                                    {% else %}
+                                    {{ genre.genre_name }},
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    {% else %}
+
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-3">
+                                No such track
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
