@@ -11,7 +11,9 @@
     <script src ='/static/js/bootstrap.min.js'></script>
     <script src ='/static/js/angular.min.js'></script>
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="/static/css/genre.css" rel="stylesheet">
+    <<script src="/static/js/signup_signin.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <script>
         $(document).ready(function(){
                  console.log("In track.html");
@@ -37,6 +39,8 @@
                                         if(success)
                                         {
                                              console.log("In success == True \n");
+
+                                             $('#search_results_div').removeClass('hide')
                                              $('#search_results_div').html(tracks_html)
 
 
@@ -90,6 +94,40 @@
                                              track_ratings_div = genre_info_div.find('.track_ratings_div')
                                              track_name_div.html(new_track_name)
                                              track_ratings_div.html(new_track_ratings)
+                                             console.log("New Ratings::");
+                                             console.log(new_track_ratings)
+                                             if( new_track_ratings <= 1)
+                                             {
+                                               var star = ' <span class="glyphicon glyphicon-asterisk"></span>'
+
+                                             }
+                                             else if ( new_track_ratings <= 2)
+                                             {
+                                               var star = '<span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>'
+                                             }
+                                             else if ( new_track_ratings <= 3)
+                                             {
+                                                var star = '<span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>'
+                                             }
+                                             else if ( new_track_ratings <= 4)
+                                             {
+                                                var star = ' <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>'
+                                             }
+                                             else
+                                             {
+                                                var star = ' <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>\
+                                                            <span class="glyphicon glyphicon-asterisk"></span>'
+                                             }
+                                             track_ratings_div.html(star)
 
                                              //window.location.replace("/greedymusic/genres/")
 
@@ -174,123 +212,12 @@
                                         }
 
                                      }
-                    });
-
- $('#sign_in_btn').click(function(e){
-                    e.preventDefault();
-                    console.log("sign_in_btn_clicked")
-                    form_data = $('#signin_form').serializeArray()
-                    console.log(form_data)
-                    url = "/greedymusic/login/"
-                    $.ajax({
-                               url : url,
-                               type : "POST",
-                               data : form_data,
-                               dataType : "json",
-                               success:function(res_data){
-                                        console.log(res_data);
-                                        var success = res_data['success'];
-                                        var message = res_data['message'];
-                                        console.log("success: " + success);
-                                        console.log("message: " + message);
-                                        if(success)
-                                        {
-                                             console.log("In success == True \n");
-
-
-                                        }
-                                        else
-                                        {
-                                             console.log("In success == false \n");
+                        });
+                    })
 
 
 
 
-                                        }
-
-                                     }
-                    });
-
-
-                 })
-
-                })
-
-                 $('#sign_in_btn').click(function(e){
-                    e.preventDefault();
-                    console.log("sign_in_btn_clicked")
-                    form_data = $('#signin_form').serializeArray()
-                    console.log(form_data)
-                    url = "/greedymusic/login/"
-                    $.ajax({
-                               url : url,
-                               type : "POST",
-                               data : form_data,
-                               dataType : "json",
-                               success:function(res_data){
-                                        console.log(res_data);
-                                        var success = res_data['success'];
-                                        var message = res_data['message'];
-                                        console.log("success: " + success);
-                                        console.log("message: " + message);
-                                        if(success)
-                                        {
-                                             console.log("In success == True \n");
-
-
-                                        }
-                                        else
-                                        {
-                                             console.log("In success == false \n");
-
-
-
-
-                                        }
-
-                                     }
-                    });
-
-
-                 })
-
-                $('#sign_up_btn').click(function(e){
-                    e.preventDefault();
-                    console.log("sign_up_btn_clicked")
-                    form_data = $('#signup_form').serializeArray()
-                    console.log(form_data)
-                    url = "/greedymusic/register/"
-                    $.ajax({
-                               url : url,
-                               type : "POST",
-                               data : form_data,
-                               dataType : "json",
-                               success:function(res_data){
-                                        console.log(res_data);
-                                        var success = res_data['success'];
-                                        var message = res_data['message'];
-                                        console.log("success: " + success);
-                                        console.log("message: " + message);
-                                        if(success)
-                                        {
-                                             console.log("In success == True \n");
-
-
-                                        }
-                                        else
-                                        {
-                                             console.log("In success == false \n");
-                                             var updateErrorMsg = savedTaskForm + " #update-prtcptn-error-msg";
-
-
-
-                                        }
-
-                                     }
-                    });
-
-
-                })
 
                 //add new genre
                 $('#add_new_genre_div').on('click', '#add_new_genre_btn', function(e){
@@ -351,374 +278,406 @@
                         });
 
                 });
-        })
+})
     </script>
 </head>
 
 <body>
-
+{% include "header.html" %}
 <!--Start of nav bar-->
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Geedy Music</a>
-        </div>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#"  data-toggle="modal" data-target="#signup_signin">Singup/Login</a></li>
-          <li><a href="#">Login</a></li>
+    <!--<nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">-->
+      <!--<div class="container-fluid">-->
+        <!--<div class="navbar-header">-->
+          <!--<a class="navbar-brand" href="#">Geedy Music</a>-->
+        <!--</div>-->
+        <!--<ul class="nav navbar-nav">-->
+          <!--<li class="active"><a href="#">Home</a></li>-->
+          <!--<li><a href="#"  data-toggle="modal" data-target="#signup_signin">Singup/Login</a></li>-->
+          <!--<li><a href="#">Login</a></li>-->
 
-        </ul>
-      </div>
-    </nav>
+        <!--</ul>-->
+      <!--</div>-->
+    <!--</nav>-->
 <!--End  of nav bar-->
 
 
 
 
 
-    <div id = "container-fluid" id="genre_outermost_wrapper" style="margin-top:60px;" >
+    <div id = "container-fluid" id="genre_outermost_wrapper" style="margin-top:60px;word-break:break-all;" >
 
         <!-- Singup/Sign InModal -->
-        <div class="modal fade modal-sm" id="signup_signin" tabindex="-1" role="dialog" >
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <br>
-                    <div class="example-tabs">
-                        <ul id="myTab" class="nav nav-tabs">
-                          <li class="active"><a href="#signin_div" data-toggle="tab">Sign In</a></li>
-                          <li class=""><a href="#signup_div" data-toggle="tab">Register</a></li>
+        <!--<div class="modal fade modal-sm" id="signup_signin" tabindex="-1" role="dialog" >-->
+            <!--<div class="modal-dialog modal-sm">-->
+                <!--<div class="modal-content">-->
+                    <!--<br>-->
+                    <!--<div class="example-tabs">-->
+                        <!--<ul id="myTab" class="nav nav-tabs">-->
+                          <!--<li class="active"><a href="#signin_div" data-toggle="tab">Sign In</a></li>-->
+                          <!--<li class=""><a href="#signup_div" data-toggle="tab">Register</a></li>-->
 
-                        </ul>
-                    </div>
-                    <div class="modal-body">
-                        <div id="myTabContent" class="tab-content">
-                            <div class="tab-pane fade active in" id="signin_div">
-                                <form class="form-horizontal" name="signin_form" id="signin_form" >
-                                    {% csrf_token %}
-                                    <fieldset>
-                                    <!-- Sign In Form -->
-                                    <!-- Text input-->
-                                        <div class="control-group">
-                                          <label class="control-label" for="email_si">Email:</label>
-                                          <div class="controls">
-                                            <input required id="email_si" name="email_si" type="text" class="form-control" placeholder="JoeSixpack" class="input-medium">
-                                          </div>
-                                        </div>
+                        <!--</ul>-->
+                    <!--</div>-->
+                    <!--<div class="modal-body">-->
+                        <!--<div id="myTabContent" class="tab-content">-->
+                            <!--<div class="tab-pane fade active in" id="signin_div">-->
+                                <!--<form class="form-horizontal" name="signin_form" id="signin_form" >-->
+                                    <!--{% csrf_token %}-->
+                                    <!--<fieldset>-->
+                                    <!--&lt;!&ndash; Sign In Form &ndash;&gt;-->
+                                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                                        <!--<div class="control-group">-->
+                                          <!--<label class="control-label" for="email_si">Email:</label>-->
+                                          <!--<div class="controls">-->
+                                            <!--<input required id="email_si" name="email_si" type="text" class="form-control" placeholder="JoeSixpack" class="input-medium">-->
+                                          <!--</div>-->
+                                        <!--</div>-->
 
-                                        <!-- Password input-->
-                                        <div class="control-group">
-                                          <label class="control-label" for="password_si">Password:</label>
-                                          <div class="controls">
-                                            <input required id="password_si" name="password_si" class="form-control" type="password" placeholder="********" class="input-medium">
-                                          </div>
-                                        </div>
+                                        <!--&lt;!&ndash; Password input&ndash;&gt;-->
+                                        <!--<div class="control-group">-->
+                                          <!--<label class="control-label" for="password_si">Password:</label>-->
+                                          <!--<div class="controls">-->
+                                            <!--<input required id="password_si" name="password_si" class="form-control" type="password" placeholder="********" class="input-medium">-->
+                                          <!--</div>-->
+                                        <!--</div>-->
 
-                                        <!-- Button -->
-                                        <div class="control-group">
-                                          <label class="control-label" for="signin"></label>
-                                          <div class="controls">
-                                            <button  name="signin" class="btn btn-success" id="sign_in_btn">Sign In</button>
-                                          </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                        </div>
+                                        <!--&lt;!&ndash; Button &ndash;&gt;-->
+                                        <!--<div class="control-group">-->
+                                          <!--<label class="control-label" for="signin"></label>-->
+                                          <!--<div class="controls">-->
+                                            <!--<button  name="signin" class="btn btn-success" id="sign_in_btn">Sign In</button>-->
+                                          <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</fieldset>-->
+                                <!--</form>-->
+                        <!--</div>-->
 
-                        <div class="tab-pane fade" id="signup_div">
-                            <form class="form-horizontal" name="signup_form" id="signup_form">
-                                {% csrf_token %}
-                                <fieldset>
-                                <!-- Sign Up Form -->
-                                <!-- Text input-->
-                                    <div class="control-group">
-                                      <label class="control-label" for="email">Email:</label>
-                                      <div class="controls">
-                                        <input id="email" name="email" class="form-control" type="text" placeholder="JoeSixpack@sixpacksrus.com" class="input-large" required>
-                                      </div>
-                                    </div>
+                        <!--<div class="tab-pane fade" id="signup_div">-->
+                            <!--<form class="form-horizontal" name="signup_form" id="signup_form">-->
+                                <!--{% csrf_token %}-->
+                                <!--<fieldset>-->
+                                <!--&lt;!&ndash; Sign Up Form &ndash;&gt;-->
+                                <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                                    <!--<div class="control-group">-->
+                                      <!--<label class="control-label" for="email">Email:</label>-->
+                                      <!--<div class="controls">-->
+                                        <!--<input id="email" name="email" class="form-control" type="text" placeholder="JoeSixpack@sixpacksrus.com" class="input-large" required>-->
+                                      <!--</div>-->
+                                    <!--</div>-->
 
-                                    <!-- Text input-->
-                                    <div class="control-group">
-                                      <label class="control-label" for="user_name">Name:</label>
-                                      <div class="controls">
-                                        <input id="user_name" name="user_name" class="form-control" type="text" placeholder="JoeSixpack" class="input-large" required>
-                                      </div>
-                                    </div>
+                                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                                    <!--<div class="control-group">-->
+                                      <!--<label class="control-label" for="user_name">Name:</label>-->
+                                      <!--<div class="controls">-->
+                                        <!--<input id="user_name" name="user_name" class="form-control" type="text" placeholder="JoeSixpack" class="input-large" required>-->
+                                      <!--</div>-->
+                                    <!--</div>-->
 
-                                    <!-- Password input-->
-                                    <div class="control-group">
-                                      <label class="control-label" for="password_su">Password:</label>
-                                      <div class="controls">
-                                        <input id="password_su" name="password_su" class="form-control" type="password" placeholder="********" class="input-large" required>
-                                        <em>1-8 Characters</em>
-                                      </div>
-                                    </div>
+                                    <!--&lt;!&ndash; Password input&ndash;&gt;-->
+                                    <!--<div class="control-group">-->
+                                      <!--<label class="control-label" for="password_su">Password:</label>-->
+                                      <!--<div class="controls">-->
+                                        <!--<input id="password_su" name="password_su" class="form-control" type="password" placeholder="********" class="input-large" required>-->
+                                        <!--<em>1-8 Characters</em>-->
+                                      <!--</div>-->
+                                    <!--</div>-->
 
-                                    <!-- Text input-->
-                                    <div class="control-group">
-                                      <label class="control-label" for="password_re_su">Re-Enter Password:</label>
-                                      <div class="controls">
-                                        <input id="password_re_su" class="form-control" name="password_re_su" type="password" placeholder="********" class="input-large" required>
-                                      </div>
-                                    </div>
+                                    <!--&lt;!&ndash; Text input&ndash;&gt;-->
+                                    <!--<div class="control-group">-->
+                                      <!--<label class="control-label" for="password_re_su">Re-Enter Password:</label>-->
+                                      <!--<div class="controls">-->
+                                        <!--<input id="password_re_su" class="form-control" name="password_re_su" type="password" placeholder="********" class="input-large" required>-->
+                                      <!--</div>-->
+                                    <!--</div>-->
 
 
-                                    <br>
-                                    <!-- Button -->
-                                    <div class="control-group">
-                                      <label class="control-label" for="signup"></label>
-                                      <div class="controls">
-                                        <button type="button"  name="signup" class="btn btn-success" id="sign_up_btn">Sign Up</button>
-                                      </div>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                  <center>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </center>
-                  </div>
-                </div>
-            </div>
-        </div>
+                                    <!--<br>-->
+                                    <!--&lt;!&ndash; Button &ndash;&gt;-->
+                                    <!--<div class="control-group">-->
+                                      <!--<label class="control-label" for="signup"></label>-->
+                                      <!--<div class="controls">-->
+                                        <!--<button type="button"  name="signup" class="btn btn-success" id="sign_up_btn">Sign Up</button>-->
+                                      <!--</div>-->
+                                    <!--</div>-->
+                                <!--</fieldset>-->
+                            <!--</form>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                  <!--<div class="modal-footer">-->
+                  <!--<center>-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                    <!--</center>-->
+                  <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
         <!-- End of Singup/Sign InModal -->
 
-
-        <!--Showing all Tracks-->
-        <div class="row" style="margin-bottom:10px;">
-            <div class="col-md-3">
-
+        <div  class="mother_div_cont_genres2">
+            <!--Showing all Tracks-->
+            <div class="row" style="margin-bottom:10px;">
+                <div class="col-md-12" align="center" style=";font-size: 35px;font-family: 'open sans', sans-serif;">
+                    Tracks
+                </div>
             </div>
-            <div class="col-md-4" align="center" style=";font-size: 35px;font-family: 'open sans', sans-serif;">
-                Tracks
-            </div>
-        </div>
-         <!--Search Form-->
-         <div class="row">
-            <div class="col-md-3">
+             <!--Search Form-->
+             <div class="row" style="margin-bottom:15px;">
 
-            </div>
-            <div class="col-md-4">
-                <form role="form" class="form-inline" id="search_form" style="margin-bottom:10px;" method="post" action="/greedymusic/search/">
-                    <div class="form-group">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="search_keyword" placeholder="tracks or genre">
+                <div class="col-md-12" align="center">
+                    <form role="form"  class="form-inline" id="search_form" style="margin-bottom:10px;" method="post" action="/greedymusic/search/">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" style="width:500px" name="search_keyword" placeholder="tracks or genre">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-default" id="search_btn"> Search </button>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-default" id="search_btn"> Search </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-         </div>
-         <!--End of Search Form-->
-         <div class="row">
-             <div class="col-md-12">
-                 <div id="search_results_div">
+                    </form>
+                </div>
+             </div>
+             <!--End of Search Form-->
+
+            <!--Search Results Div-->
+             <div class="row" style="margin-bottom:20px;">
+                 <div class="col-md-12" >
+
+                     <div id="search_results_div" class="hide">
+
+                     </div>
 
                  </div>
              </div>
-         </div>
+            <!--End of Search Results Div-->
 
-        <!--Showing all Tracks-->
-        <div class="row" style="margin-bottom:10px;">
-            <div class="col-md-2">
+            <!--Showing all Tracks-->
+            <div class="row" style="margin-bottom:20px;">
+                <div class="col-md-12" id="genre_column">
+                    {% if tracks %}
+                        {% for track in tracks %}
+                            {% if forloop.first %}
+                                <div class="row genre_box" style=";border:2px solid black;padding:8px;">
+                            {% else %}
+                                <div class="row genre_box" style=";border-width:0px 2px 2px 2px;border-style:solid;border-color black;padding:8px;" >
+                             {% endif %}
 
-            </div>
-            <div class="col-md-8" id="genre_column">
-                {% if tracks %}
-                    {% for track in tracks %}
-                        <div class="row genre_box" style="height:55px;border:1px solid black" >
-                            <div class="genre_info_div">
-                                <div class="col-md-6 track_name_div" style=";font-size: 30px;font-family: 'Ubuntu', sans-serif" >
-                                    <a href="/greedymusic/track/{{ track.id }}">
-                                        <span class="track_name_div_span">
-                                            {{ track.music_title }}
-                                        </span>
-                                    </a>
+                                <div class="genre_info_div">
+                                    <div class="col-md-6 track_name_div" style=";font-size: 30px;font-family: 'Ubuntu', sans-serif" >
+                                        <a href="/greedymusic/track/{{ track.id }}">
+                                            <span class="track_name_div_span">
+                                                {{ track.music_title }}
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2 track_ratings_div">
+                                        {% if  track.ratings <= 1 %}
+                                             <span class="glyphicon glyphicon-asterisk"></span>
+                                        {% elif  track.ratings <= 2 %}
+                                             <span class="glyphicon glyphicon-asterisk"></span>
+                                             <span class="glyphicon glyphicon-asterisk"></span>
+
+                                        {% elif  track.ratings <= 3 %}
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                        {% elif  track.ratings <= 4 %}
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                        {% else %}
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="col-md-2 col-md-offset-2" style="padding:8px;">
+                                        {% if track.user == curr_user %}
+                                        <button type="button" class="btn btn-primary edit_genre_btn"  data-id="{{ genre.id }}" >Edit</button>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <div class="col-md-2 track_ratings_div">
-                                    {{ track.ratings }}
-                                </div>
-                                <div class="col-md-4" style="padding:8px;">
-                                    {% if track.user == curr_user %}
-                                    <button type="button" class="btn btn-primary edit_genre_btn"  data-id="{{ genre.id }}" >Edit</button>
-                                    {% endif %}
+                                <div class="genre_edit_div hide" >
+                                    <form class="form-horizontal edit_genre_form" style="padding:8px" method="post" role="form" name="edit_genre_form" >
+                                        <div class="form-group">
+                                            <label  class="col-md-2 control-label" for="music_title">Track Title</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" name="music_title" id="music_title" value="{{ track.music_title }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label  class="col-md-2 control-label" for="artist_name">Artist</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" name="artist_name" id="artist_name" value="{{ track.artist_name }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label  class="col-md-2 control-label" for="ratings">Ratings</label>
+                                            <div class="col-md-10">
+                                                <!--<input type="text" class="form-control" name="ratings" id="ratings" placeholder="rock/edm"/>-->
+                                                <select class="form-control" name="ratings">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="4">5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <label  class="col-md-2 control-label" for="ratings">Genre</label>
+                                            <div class="col-md-10">
+                                                <select class="form-control" name="genres" multiple>
+                                                {% for genre in genres %}
+                                                    <option value="{{ genre.id }}">{{genre.genre_name }}</option>
+                                                {% endfor %}
+                                                </select>
+                                                  <input type="hidden" value="{{ track.id }}" name="track_id">
+                                            </div>
+                                         </div>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-10">
+                                              <button type="button" class="btn btn-default save_genre_btn">Save </button>
+                                             <button type="button" class="btn btn-default cancel_genre_btn">Cancel </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="genre_edit_div hide" style="background-color:rgba(255,0,0,0.1)">
-                                <!--<form class="edit_genre_form form-horizontal" role="form" >-->
-                                    <!--<div class="form-group">-->
-                                        <!--<div class="col-md-10">-->
-                                            <!--<input type="text" class="form-control" name="genre_name" value="{{ genre.genre_name }}">-->
-                                            <!--<input type="hidden" value="{{ genre.id }}" name="genre_id">-->
-                                        <!--</div>-->
-                                        <!--<div class="form-group">-->
-                                            <!--<div class="col-md-offset-2 col-md-10">-->
-                                                <!--<button type="button" class="btn btn-default save_genre_btn">Save </button>-->
-                                                <!--<button type="button" class="btn btn-default cancel_genre_btn">Cancel </button>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</form>-->
 
-                                <form class="form-horizontal edit_genre_form" method="post" role="form" name="edit_genre_form" >
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <!-- End of Showing all Tracks-->
+
+            <!--Add a New Track div-->
+            <div class="row" style="margin-bottom:10px;" id="add_new_genre_div">
+
+                <div class="col-md-12" align="center">
+                    <button type="button" class="btn btn-primary"  id="add_genre_modal_btn" data-toggle="modal" data-target="#add_genre_modal">
+                       <span style="font-size: 20px;font-family: 'open sans', sans-serif;">
+                           Add New Track
+                       </span>
+                    </button>
+                </div>
+
+                <!--Modal for adding new track-->
+                <div id="add_genre_modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Add New Track</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" method="post" role="form" name="add_genre_form" id="add_genre_form" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label  class="col-md-2 control-label" for="music_title">Track Title</label>
                                         <div class="col-md-10">
-                                            <input type="text" class="form-control" name="music_title" id="music_title" value="{{ track.music_title }}">
+                                            <input type="text" class="form-control" name="music_title" id="music_title" placeholder="rock/edm"/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label  class="col-md-2 control-label" for="artist_name">Artist</label>
                                         <div class="col-md-10">
-                                            <input type="text" class="form-control" name="artist_name" id="artist_name" value="{{ track.artist_name }}">
+                                            <input type="text" class="form-control" name="artist_name" id="artist_name" placeholder="rock/edm"/>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label  class="col-md-2 control-label" for="ratings">Ratings</label>
                                         <div class="col-md-10">
-                                            <input type="text" class="form-control" name="ratings" id="ratings" value="{{ track.ratings }}">
+                                            <!--<input type="text" class="form-control" name="ratings" id="ratings" placeholder="rock/edm"/>-->
+                                            <select class="form-control" name="ratings">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="4">5</option>
+                                            </select>
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
+                                     <div class="form-group">
                                         <label  class="col-md-2 control-label" for="ratings">Genre</label>
                                         <div class="col-md-10">
-                                            <select name="genres" multiple>
+                                            <select class="form-control" name="genres" multiple>
                                             {% for genre in genres %}
                                                 <option value="{{ genre.id }}">{{genre.genre_name }}</option>
                                             {% endfor %}
                                             </select>
-                                            <input type="hidden" value="{{ track.id }}" name="track_id">
                                         </div>
-                                    </div>
+                                     </div>
 
-                                    <div class="form-group">
+
+
+                                     <div class="form-group">
                                         <div class="col-md-offset-2 col-md-10">
-                                          <button type="button" class="btn btn-default save_genre_btn">Save </button>
-                                         <button type="button" class="btn btn-default cancel_genre_btn">Cancel </button>
+                                          <button type="submit" class="btn btn-default" id="add_genre_btn">Add track</button>
                                         </div>
-                                    </div>
+                                     </div>
                                 </form>
                             </div>
-                        </div>
-
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-
-
-        </div>
-        <!-- End of Showing all Tracks-->
-
-        <!--Add a New Genre div-->
-        <div class="row" style="margin-bottom:10px;" id="add_new_genre_div">
-            <div class="col-md-3">
-
-            </div>
-            <div class="col-md-4" align="center">
-                <button type="button" class="btn btn-primary"  id="add_genre_modal_btn" data-toggle="modal" data-target="#add_genre_modal">
-                    Add New Track
-                </button>
-            </div>
-
-            <!--Modal for adding new track-->
-            <div id="add_genre_modal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-
-                <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Add New Track</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" method="post" role="form" name="add_genre_form" id="add_genre_form" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <label  class="col-md-2 control-label" for="music_title">Track Title</label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" name="music_title" id="music_title" placeholder="rock/edm"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label  class="col-md-2 control-label" for="artist_name">Artist</label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" name="artist_name" id="artist_name" placeholder="rock/edm"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label  class="col-md-2 control-label" for="ratings">Ratings</label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" name="ratings" id="ratings" placeholder="rock/edm"/>
-                                    </div>
-                                </div>
-
-                                 <div class="form-group">
-                                    <label  class="col-md-2 control-label" for="ratings">Genre</label>
-                                    <div class="col-md-10">
-                                        <select name="genres" multiple>
-                                        {% for genre in genres %}
-                                            <option value="{{ genre.id }}">{{genre.genre_name }}</option>
-                                        {% endfor %}
-                                        </select>
-                                    </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                    <label  class="col-md-2 control-label" for="music_track">Track(audio file)</label>
-                                    <div class="col-md-offset-2 col-md-10">
-                                        <input type="file" name="music_track" id="music_track">
-                                    </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                    <div class="col-md-offset-2 col-md-10">
-                                      <button type="submit" class="btn btn-default" id="add_genre_btn">Add track</button>
-                                    </div>
-                                 </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                           <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+                            <div class="modal-footer">
+                               <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- End for Modal for adding new track-->
             </div>
-            <!-- End for Modal for adding new track-->
-        </div>
-        <!-- End of Add a New Genre div-->
+            <!-- End of Add a New Track div-->
 
-        <!-- Pagination-->
-        <div class="row">
-            <div class="col-md-offset-2 col-md-5" align="center">
-                <div class="pagination ">
+            <!-- Pagination-->
+            <div class="row" style="margin-bottom:50px;margin-top:50px;">
+                <div class="col-md-12" align="center">
+
                     <span class="step-links" style="font-size: 20px;font-family: 'open sans', sans-serif;">
-                        {% if tracks.has_previous %}
-                            <a href="?page={{ tracks.previous_page_number }}">Previous</a>
-                        {% endif %}
+                        <div class="row">
+                            {% if tracks.has_previous %}
+                                <div class="col-md-3 paginate_track" >
+                                     <i class="fa fa-arrow-circle-o-left"></i>
+                                    <a href="?page={{ tracks.previous_page_number }}">
+                                        Page {{ tracks.previous_page_number }}</a>
 
-                        <span class="current">
-                            Page {{ tracks.number }} of {{ tracks.paginator.num_pages }}.
-                        </span>
+                                </div>
+                            {% endif %}
 
-                        {% if tracks.has_next %}
-                            <a href="?page={{ tracks.next_page_number }}">Next</a>
-                        {% endif %}
+                            <span class="current">
+                                 <div class="col-md-4 col-md-offset-1 paginate_track">
+                                    Page {{ tracks.number }} of {{ tracks.paginator.num_pages }}
+                                 </div>
+                            </span>
+
+                            {% if tracks.has_next %}
+                                <div class="col-md-3 col-md-offset-1  paginate_track">
+                                    <a href="?page={{ tracks.next_page_number }}">Page {{ tracks.next_page_number }}</a>
+                                   <i class="fa fa-arrow-circle-o-right"></i>
+
+
+                                </div>
+                            {% endif %}
+                        </div>
                     </span>
+
                 </div>
             </div>
+            <!--End of Pagination-->
+            </div>
         </div>
-        <!--End of Pagination-->
+
     </div>
 
 

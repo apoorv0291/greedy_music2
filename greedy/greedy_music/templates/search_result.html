@@ -2,65 +2,90 @@
 
 
 
-        <div class="row" style="margin-bottom:30px;" >
-            <div class="col-md-9" >
-                <div style="margin-left:300px;margin-right:80px;margin-top:30px;font-size: 30px;font-family: 'Ubuntu', sans-serif">
-                    <div class="row" style="border:1px solid black">
-                        <div class="col-md-8" align="center">
-                            Track Details
-                        </div>
-                    </div>
-                    {% if tracks %}
-                    <!--short way-->
-                        <div class="row" style="border:1px solid black">
-                            <div class="col-md-3">
-                                Track
-                            </div>
-                            <div class="col-md-3">
-                                Artist
-                            </div>
-                            <div class="col-md-3">
-                                Rating
-                            </div>
-                            <div class="col-md-3">
-                                Genre
-                            </div>
-                        </div>
-                        {% for track in tracks %}
-                            <div class="row" style="border:1px solid black">
-                                <div class="col-md-3">
-                                    {{track.music_title}}
-                                </div>
-                                <div class="col-md-3">
-                                    {{track.artist_name}}
-                                </div>
-                                <div class="col-md-3">
-                                    {{track.ratings}}
-                                </div>
-                                 <div class="col-md-3">
-                                     <!--Mamny to many field-->
-                                    {% for genre in track.genre.all %}
-                                    {% if forloop.last %}
-                                    {{ genre.genre_name }} &nbsp;&nbsp;
-                                    {% else %}
-                                    {{ genre.genre_name }},
-                                    {% endif %}
-                                {% endfor %}
-                                </div>
-                            </div>
-                        {% endfor %}
+<div class="row" style="margin-bottom:50px;" >
+    <div class="col-md-12" align="center"  style=";font-size: 25px;font-family: 'Ubuntu', sans-serif" >
 
-                    {% else %}
-
-                        <div class="row">
-                            <div class="col-md-8 col-md-offset-3">
-                                No such Tack/Genre
-                            </div>
-                        </div>
-
-
-                    {% endif %}
-                </div>
+        <div class="row" style="border-width:2px 2px 0px 2px;border-style:solid;border-color:black">
+            <div class="col-md-12" align="center">
+                Search Results
             </div>
         </div>
+        {% if tracks %}
+        <!--short way-->
+            <div class="row" style="border-width:2px 2px 0px 2px;border-style:solid;border-color:black">
+                <div class="col-md-3">
+                    Track
+                </div>
+                <div class="col-md-3">
+                    Artist
+                </div>
+                <div class="col-md-3">
+                    Rating
+                </div>
+                <div class="col-md-3">
+                    Genre
+                </div>
+            </div>
+            {% for track in tracks %}
+                {% if forloop.first %}
+                    <div class="row" style="border:2px solid black">
+                {% else %}
+                    <div class="row" style="border-width:0px 2px 2px 2px; border-style:solid;border-color:black">
+                {% endif %}
+                    <div class="col-md-3">
+                        {{track.music_title}}
+                    </div>
+                    <div class="col-md-3">
+                        {{track.artist_name}}
+                    </div>
+                    <div class="col-md-3">
+                        {% if  track.ratings <= 1 %}
+                                     <span class="glyphicon glyphicon-asterisk"></span>
+                                {% elif  track.ratings <= 2 %}
+                                     <span class="glyphicon glyphicon-asterisk"></span>
+                                     <span class="glyphicon glyphicon-asterisk"></span>
+
+                                {% elif  track.ratings <= 3 %}
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                {% elif  track.ratings <= 4 %}
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                    <span class="glyphicon glyphicon-asterisk"></span>
+                                {% endif %}
+                    </div>
+                     <div class="col-md-3">
+                         <!--Mamny to many field-->
+                        {% for genre in track.genre.all %}
+                        {% if forloop.last %}
+                        {{ genre.genre_name }} &nbsp;&nbsp;
+                        {% else %}
+                        {{ genre.genre_name }},
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% else %}
+
+            <div class="row">
+                <div class="col-md-12" align="center"  style="border-width:2px 2px 2px 2px; border-style:solid;border-color:black">
+                    No such Track
+                </div>
+            </div>
+
+
+        {% endif %}
+
+    </div>
+</div>
 

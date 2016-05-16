@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^genres/?$', view_all_genre),
     url(r'^register/?$', register_user),
     url(r'^login/?$', login_user),
+    url(r'^logout/?$', logout_user),
     url(r'^addGenre/?$', add_genre),
     url(r'^addTrack/?$', add_track),
     url(r'^editGenre/?$', edit_genre),
