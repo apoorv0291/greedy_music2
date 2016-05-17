@@ -1,0 +1,138 @@
+<!--Start of nav bar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:10px">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Greedy Music</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/greedymusic/tracks/">Home</a></li>
+            <!--<li><a href="#" style="color:white;">{{ curr_user.is_authenticated }}</a> </li>-->
+
+             {% if curr_user.is_authenticated %}
+                <li> <a href="#">
+                        <span style="color:white"> Hello {{ curr_user.username }}</span>
+                    </a>
+                </li>
+            {% else %}
+                   <li> <a href=""  data-toggle="modal" data-target="#signup_signin"> Log In/Sign Up </a> </li>
+            {% endif %}
+
+            {% if curr_user.is_authenticated %}
+                <li><a href="/greedymusic/logout">Logout</a></li>
+
+            {% endif %}
+
+
+
+        </ul>
+      </div>
+    </nav>
+<!--End  of nav bar-->
+
+ <!-- Singup/Sign InModal -->
+        <div class="modal fade modal-sm" id="signup_signin" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <br>
+                    <div class="example-tabs">
+                        <ul id="myTab" class="nav nav-tabs">
+                          <li class="active"><a href="#signin_div" data-toggle="tab">Sign In</a></li>
+                          <li class=""><a href="#signup_div" data-toggle="tab">Register</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="modal-body">
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade active in" id="signin_div">
+                                <form class="form-horizontal" name="signin_form" id="signin_form" >
+                                    {% csrf_token %}
+                                    <fieldset>
+                                    <!-- Sign In Form -->
+                                    <!-- Text input-->
+                                        <div class="control-group">
+                                          <label class="control-label" for="email_si">Email:</label>
+                                          <div class="controls">
+                                            <input required id="email_si" name="email_si" type="text" class="form-control" placeholder="JoeSixpack" class="input-medium">
+                                          </div>
+                                        </div>
+
+                                        <!-- Password input-->
+                                        <div class="control-group">
+                                          <label class="control-label" for="password_si">Password:</label>
+                                          <div class="controls">
+                                            <input required id="password_si" name="password_si" class="form-control" type="password" placeholder="********" class="input-medium">
+                                          </div>
+                                        </div>
+
+                                        <!-- Button -->
+                                        <div class="control-group">
+                                          <label class="control-label" for="signin"></label>
+                                          <div class="controls">
+                                            <button  name="signin" class="btn btn-success" id="sign_in_btn">Sign In</button>
+                                          </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="signup_div">
+                            <form class="form-horizontal" name="signup_form" id="signup_form">
+                                {% csrf_token %}
+                                <fieldset>
+                                <!-- Sign Up Form -->
+                                <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="email">Email:</label>
+                                      <div class="controls">
+                                        <input id="email" name="email" class="form-control" type="text" placeholder="JoeSixpack@sixpacksrus.com" class="input-large" required>
+                                      </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="user_name">Name:</label>
+                                      <div class="controls">
+                                        <input id="user_name" name="user_name" class="form-control" type="text" placeholder="JoeSixpack" class="input-large" required>
+                                      </div>
+                                    </div>
+
+                                    <!-- Password input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="password_su">Password:</label>
+                                      <div class="controls">
+                                        <input id="password_su" name="password_su" class="form-control" type="password" placeholder="********" class="input-large" required>
+                                        <em>1-8 Characters</em>
+                                      </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="control-group">
+                                      <label class="control-label" for="password_re_su">Re-Enter Password:</label>
+                                      <div class="controls">
+                                        <input id="password_re_su" class="form-control" name="password_re_su" type="password" placeholder="********" class="input-large" required>
+                                      </div>
+                                    </div>
+
+
+                                    <br>
+                                    <!-- Button -->
+                                    <div class="control-group">
+                                      <label class="control-label" for="signup"></label>
+                                      <div class="controls">
+                                        <button type="button"  name="signup" class="btn btn-success" id="sign_up_btn">Sign Up</button>
+                                      </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-default" id="close_btn" data-dismiss="modal">Close</button>
+                    </center>
+                  </div>
+                </div>
+            </div>
+        </div>
+<!-- End of Singup/Sign InModal -->

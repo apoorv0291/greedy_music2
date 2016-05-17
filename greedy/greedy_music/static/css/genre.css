@@ -1,0 +1,32 @@
+body {
+        background-color: #E9EAEC;
+     }
+
+ a,a:hover {
+             color: #080808;
+             text-decoration: none;
+    }
+
+.glyphicon {
+
+        font-size:30px;
+        color: #e67e22;
+}
+
+.paginate_genre {
+            border:2px solid black;
+            border-radius:5px;
+            padding:3px
+}
+
+.paginate_track {
+            border:2px solid black;
+            border-radius:5px;
+            padding:3px
+}
+
+.fa { color:#286090;
+        font-size:40px;
+}
+.mother_div_cont_genres{       margin-left:400px;margin-right:400px     }
+.mother_div_cont_genres2{       margin-left:300px;margin-right:300px     }
