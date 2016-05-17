@@ -1,15 +1,16 @@
 from django.shortcuts import render
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template.loader import render_to_string
 from models import *
 from serializers import *
 from rest_framework.renderers import JSONRenderer
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import login,authenticate,logout
 from django.shortcuts import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 from django.db.models import Q
+from itertools import chain
 from django.core import serializers
 # Create your views here.
 
@@ -31,9 +32,10 @@ def search_tracks(request):
         keyword = keyword.strip().lower()
         print "keyword:", keyword
         try:
-            tracks = MusicTrack.objects.filter(Q(music_title__icontains=keyword)
-                                        | Q(genre__genre_name__icontains=keyword))
-            print tracks
+            tracks = MusicTrack.objects.filter(music_title__icontains=keyword)
+            track2=    MusicTrack.objects.filter(genre__genre_name__icontains=keyword)
+            tracks = list(chain(tracks, track2))
+            print "tracks***",len(tracks)
             # tracks_json = serializers.serialize('json', tracks, fields=('music_title', 'artist_name', 'ratings' ) )
             tracks_serialzed = MusicTrackSerializer(tracks, many=True)
             tracks_json = JSONRenderer().render(tracks_serialzed.data)
@@ -43,6 +45,7 @@ def search_tracks(request):
             # return HttpResponse(tracks_json, content_type="application/json")
             print "apoorv"
             search_result_html = render_to_string("search_result.html", {"tracks": tracks})
+            print "search_result_html", search_result_html
             data = {"success": True, "message": "Tracks Searched", "tracks_html": search_result_html }
             return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -59,10 +62,19 @@ def genre_details(request, genre_id):
 
     print "@@in genre_details@@", request.user
     genre_id = int(genre_id)
-    genre = Genre.objects.get(id=genre_id)
+    user = request.user
+    length = 0
+    try:
+        genre = Genre.objects.get(id=genre_id)
+        length = len(genre.music_track.all())
+    except Exception, e:
+        print e
+        genre = None
     print "Genre is ::", genre_id
-    print "track related to genre are  :", genre.music_track.all()
-    return render_to_response("genre_details.html", {"genre": genre})
+
+
+    # print "track related to genre are  :", genre.music_track.all()
+    return render_to_response("genre_details.html", {"genre": genre, "length": length,  "curr_user": user})
 
 
 @csrf_exempt
@@ -70,9 +82,14 @@ def track_details(request, track_id):
 
     print "@@in track_details@@", request.user
     track_id = int(track_id)
-    track = MusicTrack.objects.get(id=track_id)
-    print "track is :", track.genre.all()
-    return render_to_response("track_details.html", {"track": track})
+    user = request.user
+    try:
+        track = MusicTrack.objects.get(id=track_id)
+    except Exception,e:
+        print e
+        track = None
+    # print "track is :", track.genre.all()
+    return render_to_response("track_details.html", {"track": track,  "curr_user": user})
 
 
 @csrf_exempt
@@ -81,7 +98,7 @@ def edit_track(request):
     print "@@In Edit track@@"
     user = request.user
     print "user:::", user
-    if user.is_authenticated:
+    if user.is_authenticated():
         data = request.POST
         track_id = data.get("track_id")
         music_title = data.get("music_title")
@@ -202,7 +219,7 @@ def add_track(request):
     print "@@In add_track@@"
     user = request.user
     print user
-    if user.is_authenticated:
+    if user.is_authenticated():
         data = request.POST
         music_track = request.FILES
         print "Data::", data
@@ -310,7 +327,7 @@ def edit_genre(request):
     print "@@In Edit Genre@@"
     user = request.user
     print "user:::", user
-    if user.is_authenticated:
+    if user.is_authenticated():
         data = request.POST
         genre_id = data.get("genre_id")
         genre_name = data.get("genre_name")
@@ -354,7 +371,7 @@ def add_genre(request):
     print "@@In add_genre@@"
     user = request.user
     print user
-    if user.is_authenticated:
+    if user.is_authenticated():
         data = request.POST
         print "Data::", data
         genre_name = data.get("genre_name")
@@ -402,6 +419,7 @@ def view_all_genre(request):
 
     print "===In view_all_genre==="
     user = request.user
+    print "USer::",user
     genres = Genre.objects.all()
     print "==genres==", genres
     paginator = Paginator(genres, 5)  # Show 25 contacts per page
@@ -417,7 +435,10 @@ def view_all_genre(request):
     # genres_serialized = GenreSerializer(genres, many=True)
     # genres_json = JSONRenderer().render(genres_serialized.data)
     # print "==genres_json==", genres_json
-    return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user})
+    print "genre_paginated", genre_paginated
+    is_authenticated = user.is_authenticated()
+    print "is_authenticated@@", is_authenticated
+    return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user, })
 
 
 def view_all_music_tracks(request):
@@ -436,6 +457,8 @@ def view_all_music_tracks(request):
         music_tracks_paginated = paginator.page(paginator.num_pages)
 
     genres = Genre.objects.all()
+    is_authenticated = user.is_authenticated()
+    print "is_authenticated@@", is_authenticated
     # music_tracks_serialized = MusicTrackSerializer(music_tracks, many=True)
     # music_tracks_json = JSONRenderer().render(music_tracks_serialized.data)
 
@@ -493,4 +516,9 @@ def login_user(request):
         login(request, user)
         return HttpResponse(data, content_type="application/json")
 
+@csrf_exempt
+def logout_user(request):
 
+    print "@@In logut@@"
+    logout(request)
+    return redirect('/greedymusic/tracks')
