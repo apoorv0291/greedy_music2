@@ -293,8 +293,10 @@
         <div class="row" style="margin-bottom:10px;margin-top:20px;" id="add_new_genre_div" >
 
             <div class="col-md-12" align="center" >
-                <button type="button" class="btn btn-primary"   id="add_genre_modal_btn" data-toggle="modal" data-target="#add_genre_modal">
-                   <span style="font-size: 20px;font-family: 'open sans', sans-serif;"> Add New Genre </span>
+                 {%if curr_user.is_authenticated %}
+                    <button type="button" class="btn btn-primary"   id="add_genre_modal_btn" data-toggle="modal" data-target="#add_genre_modal">
+                    <span style="font-size: 20px;font-family: 'open sans', sans-serif;"> Add New Genre </span>
+                 {% endif %}
                 </button>
             </div>
 
