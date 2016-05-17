@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^editGenre/?$', edit_genre),
     url(r'^editTrack/?$', edit_track),
     url(r'^search/?$', search_tracks),
+    url(r'^(?s).*$',view_all_music_tracks)
 
     # url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
     #     'document_root': settings.MEDIA_ROOT}),

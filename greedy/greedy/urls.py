@@ -7,9 +7,11 @@ admin.autodiscover()
 
 
 urlpatterns = [
+    url(r'^$', include('greedy_music.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^greedymusic/', include('greedy_music.urls')),
-    url(r'^$', include('greedy_music.urls'))
+    url(r'^(?s).*$', include('greedy_music.urls'))
+
 
     # url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
     #     'document_root': settings.MEDIA_ROOT}),
