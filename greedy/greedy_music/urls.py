@@ -7,7 +7,7 @@ admin.autodiscover()
 
 
 urlpatterns = [
-
+    url(r'^$', view_all_music_tracks),
     url(r'^track/(?P<track_id>\d+)/?$', track_details),
     url(r'^genre/(?P<genre_id>\d+)/?$', genre_details),
     url(r'^tracks/?$', view_all_music_tracks),
