@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^login/?$', login_user),
     url(r'^logout/?$', logout_user),
     url(r'^addGenre/?$', add_genre),
-    url(r'^addTrack/?$', add_track),
+    # url(r'^addTrack/?$', add_track),
     url(r'^editGenre/?$', edit_genre),
     url(r'^editTrack/?$', edit_track),
     url(r'^search/?$', search_tracks),

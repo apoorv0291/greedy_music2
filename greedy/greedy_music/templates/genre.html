@@ -97,7 +97,8 @@
                     console.log("add_genre_btn_clicked")
                     form_data = $('#add_genre_form').serializeArray()
                     console.log(form_data)
-                    url = "/greedymusic/addGenre/"
+                    url = "/greedymusic/genres"
+                    //url = "/greedymusic/addGenre"
                     $.ajax({
                                url : url,
                                type : "POST",

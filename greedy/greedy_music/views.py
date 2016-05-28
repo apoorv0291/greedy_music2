@@ -245,17 +245,49 @@ def add_genre(request):
 def view_all_genre(request):
 
     user = request.user
-    genres = Genre.objects.all()
-    paginator = Paginator(genres, 5)  # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        genre_paginated = paginator.page(page)
-    except PageNotAnInteger:
-        genre_paginated = paginator.page(1)
-    except EmptyPage:
-        genre_paginated = paginator.page(paginator.num_pages)
-    is_authenticated = user.is_authenticated()
-    return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user, })
+    print "view_all_genres"
+    print "request.method==", request.method
+    if request.method == 'GET':
+        print "in GET"
+        genres = Genre.objects.all()
+        print "Genres", genres
+        paginator = Paginator(genres, 5)  # Show 25 contacts per page
+        page = request.GET.get('page')
+        try:
+            genre_paginated = paginator.page(page)
+        except PageNotAnInteger:
+            genre_paginated = paginator.page(1)
+        except EmptyPage:
+            genre_paginated = paginator.page(paginator.num_pages)
+        is_authenticated = user.is_authenticated()
+        return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user, })
+
+    elif request.method == 'POST':
+        print "in post in view_all_genres()"
+        if user.is_authenticated():
+            data = request.POST
+            genre_name = data.get("genre_name")
+            errors = []
+            is_valid_genre, errors = utils.is_genre_details_valid(genre_name=genre_name)
+            if is_valid_genre == 1:
+                genre_name = genre_name.lower()
+                try:
+                    genre = Genre(genre_name=genre_name, user=user)
+                    genre.save()
+                    message = "Genre created and saved."
+                    data = {"success": True, "message": message}
+                except Exception, e:
+                    print "Exception", e
+                    message = "Genre already exists."
+                    data = {"success": False, "message": message}
+
+            else:
+                data = {"success": False, "message": errors[0]}
+
+        else:
+            data = {"success": False, "message": "User is not authenticated"}
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 
 def view_all_music_tracks(request):
