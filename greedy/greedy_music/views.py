@@ -17,7 +17,7 @@ from greedy_music import utils
 
 @csrf_exempt
 def search_tracks(request):
-
+    print "search_tracks"
     data = request.POST
     keyword = data.get('search_keyword')
     if keyword is None or keyword == '':
@@ -41,6 +41,53 @@ def search_tracks(request):
     return HttpResponse(data, content_type="application/json")
 
 
+#viewing all genres and adding a new genre
+@csrf_exempt
+def view_all_genre(request):
+
+    user = request.user
+    print "view_all_genres"
+    print "request.method==", request.method
+    if request.method == 'GET':
+        print "in GET"
+        genres = Genre.objects.all()
+        print "Genres", genres
+        paginator = Paginator(genres, 5)  # Show 25 contacts per page
+        page = request.GET.get('page')
+        try:
+            genre_paginated = paginator.page(page)
+        except PageNotAnInteger:
+            genre_paginated = paginator.page(1)
+        except EmptyPage:
+            genre_paginated = paginator.page(paginator.num_pages)
+        is_authenticated = user.is_authenticated()
+        return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user, })
+    elif request.method == 'POST':
+        print "in post in view_all_genres()"
+        if user.is_authenticated():
+            data = request.POST
+            genre_name = data.get("genre_name")
+            errors = []
+            is_valid_genre, errors = utils.is_genre_details_valid(genre_name=genre_name)
+            if is_valid_genre == 1:
+                genre_name = genre_name.lower()
+                try:
+                    genre = Genre(genre_name=genre_name, user=user)
+                    genre.save()
+                    message = "Genre created and saved."
+                    data = {"success": True, "message": message}
+                except Exception, e:
+                    print "Exception", e
+                    message = "Genre already exists."
+                    data = {"success": False, "message": message}
+
+            else:
+                data = {"success": False, "message": errors[0]}
+
+        else:
+            data = {"success": False, "message": "User is not authenticated"}
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 
 @csrf_exempt
@@ -98,7 +145,7 @@ def genre_details(request, genre_id):
 @csrf_exempt
 #for editing track and viewing specific  track
 def track_details(request, track_id):
-
+    print "in track_Details"
     track_id = int(track_id)
     user = request.user
     if request.method == 'GET':
@@ -164,58 +211,9 @@ def track_details(request, track_id):
 
 
 @csrf_exempt
-#viewing all genres and adding a new genre
-def view_all_genre(request):
-
-    user = request.user
-    print "view_all_genres"
-    print "request.method==", request.method
-    if request.method == 'GET':
-        print "in GET"
-        genres = Genre.objects.all()
-        print "Genres", genres
-        paginator = Paginator(genres, 5)  # Show 25 contacts per page
-        page = request.GET.get('page')
-        try:
-            genre_paginated = paginator.page(page)
-        except PageNotAnInteger:
-            genre_paginated = paginator.page(1)
-        except EmptyPage:
-            genre_paginated = paginator.page(paginator.num_pages)
-        is_authenticated = user.is_authenticated()
-        return render_to_response("genre.html", {"genres": genre_paginated, "curr_user": user, })
-
-    elif request.method == 'POST':
-        print "in post in view_all_genres()"
-        if user.is_authenticated():
-            data = request.POST
-            genre_name = data.get("genre_name")
-            errors = []
-            is_valid_genre, errors = utils.is_genre_details_valid(genre_name=genre_name)
-            if is_valid_genre == 1:
-                genre_name = genre_name.lower()
-                try:
-                    genre = Genre(genre_name=genre_name, user=user)
-                    genre.save()
-                    message = "Genre created and saved."
-                    data = {"success": True, "message": message}
-                except Exception, e:
-                    print "Exception", e
-                    message = "Genre already exists."
-                    data = {"success": False, "message": message}
-
-            else:
-                data = {"success": False, "message": errors[0]}
-
-        else:
-            data = {"success": False, "message": "User is not authenticated"}
-    data = json.dumps(data)
-    return HttpResponse(data, content_type="application/json")
-
-@csrf_exempt
 # for viewing all tracks and adding new tracks
 def view_all_music_tracks(request):
-
+    print "in viewing al music tracks"
     user = request.user
     if request.method == 'GET':
         music_tracks = MusicTrack.objects.all()
@@ -233,6 +231,7 @@ def view_all_music_tracks(request):
         return render_to_response("track.html", {"tracks": music_tracks_paginated, "genres": genres, "curr_user": user})
 
     elif request.method == 'POST':
+        print "in adding new track post"
         if user.is_authenticated():
             data = request.POST
             music_track = request.FILES
@@ -298,7 +297,7 @@ def register_user(request):
         message = "User Already Registered"
     except Exception, e:
         print "Exception:", e
-        user = User(username=   email, first_name=first_name, last_name=last_name, email=email )
+        user = User(username=email, first_name=first_name, last_name=last_name, email=email )
         user.set_password(password)
         user.save()
         message = "User Registered"

@@ -72,7 +72,9 @@
                     console.log(form_data[0].value)
                     new_track_name = form_data[0].value
                     new_track_ratings = form_data[2].value
-                    url = "/greedymusic/editTrack/"
+                    track_id = form_data[4].value
+                    url = "/greedymusic/track/" + track_id
+                    console.log("URL@@@" + url )
                     $.ajax({
                                url : url,
                                type : "POST",
@@ -182,7 +184,7 @@
                     //console.log(file)
                     //console.log("after adding file data")
                     //console.log(formData)
-                    url = "/greedymusic/addTrack/"
+                    url = "/greedymusic/track/"
                     $.ajax({
                                url : url,
                                type : "POST",
@@ -198,7 +200,7 @@
                                         {
                                              console.log("In success == Trueee111 \n");
                                              alert(message)
-                                             window.location.replace("/greedymusic/tracks/")
+                                             window.location.replace("/greedymusic/track/")
 
 
                                         }

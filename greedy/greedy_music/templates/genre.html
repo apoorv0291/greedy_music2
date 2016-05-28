@@ -100,7 +100,7 @@
                     console.log("add_genre_btn_clicked")
                     form_data = $('#add_genre_form').serializeArray()
                     console.log(form_data)
-                    url = "/greedymusic/genres"
+                    url = "/greedymusic/genre"
                     //url = "/greedymusic/addGenre"
                     $.ajax({
                                url : url,
@@ -117,7 +117,7 @@
                                         {
                                              console.log("In success == True \n");
                                              alert(message)
-                                             window.location.replace("/greedymusic/genres/")
+                                             window.location.replace("/greedymusic/genre/")
 
 
                                         }
