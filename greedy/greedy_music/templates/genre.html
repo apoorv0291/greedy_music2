@@ -31,7 +31,10 @@
                     console.log(form_data)
                     console.log(form_data[0].value)
                     new_genre_name = form_data[0].value
-                    url = "/greedymusic/editGenre/"
+                    id = form_data[1].value
+                    console.log(id)
+                    url = "/greedymusic/genre/" + id
+                    console.log("uRL@@@  " + url)
                     $.ajax({
                                url : url,
                                type : "POST",

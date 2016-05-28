@@ -73,8 +73,8 @@ def is_genre_details_valid(**genre_details):
     if genre_id:
         if genre_id.isdigit():
             try:
-                print "track_id", genre_id
-                track = MusicTrack.objects.get(id=int(genre_id))
+                print "genre_id", genre_id
+                track = Genre.objects.get(id=int(genre_id))
             except Exception, e:
                 print e
                 err_msg = "No Such Genre"
