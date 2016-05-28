@@ -12,6 +12,7 @@ import json
 from django.db.models import Q
 from itertools import chain
 from django.core import serializers
+from greedy_music import utils
 # Create your views here.
 
 @csrf_exempt
@@ -22,8 +23,8 @@ def search_tracks(request):
     if keyword is None or keyword == '':
         message = "Keyword Cannot be left blank"
         data = {"success": False, "message": message}
-        data = json.dumps(data)
-        return HttpResponse(data, content_type="application/json")
+        # data = json.dumps(data)
+        # return HttpResponse(data, content_type="application/json")
     else:
         keyword = keyword.strip().lower()
         try:
@@ -32,12 +33,12 @@ def search_tracks(request):
             tracks = list(chain(tracks, track2))
             search_result_html = render_to_string("search_result.html", {"tracks": tracks})
             data = {"success": True, "message": "Tracks Searched", "tracks_html": search_result_html }
-            return HttpResponse(json.dumps(data), content_type="application/json")
-
+            # return HttpResponse(json.dumps(data), content_type="application/json")
         except Exception, e:
             print "Exception", e
-
-
+            return HttpResponse(data, content_type="application/json")
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 
 
@@ -72,8 +73,7 @@ def track_details(request, track_id):
 
 @csrf_exempt
 def edit_track(request):
-
-
+    print "in edit_track"
     user = request.user
     if user.is_authenticated():
         data = request.POST
@@ -83,90 +83,47 @@ def edit_track(request):
         ratings = data.get("ratings")
         genres = data.getlist('genres')
         errors = []
-        if music_title is None or music_title.strip() == '':
-           err_msg = "Track's title is Required"
-           errors.append(err_msg)
-
-        if artist_name is None or artist_name.strip() == '':
-            err_msg = "Artist Name is Required"
-            errors.append(err_msg)
-
-        if ratings is None or ratings.strip() == '':
-            err_msg = "Rating is Required"
-            errors.append(err_msg)
-
-        if len(genres) == 0:
-            err_msg = "At least one genre is required"
-            errors.append(err_msg)
-
-        if len(errors) == 0:
+        is_valid_track, errors = utils.is_track_details_valid(music_title=music_title, ratings=ratings,
+                                     track_id=track_id, artist_name=artist_name, genres=genres)
+        if is_valid_track == 1:
             music_title = music_title.lower()
             artist_name = artist_name.lower()
             ratings = float(ratings)
             track = MusicTrack.objects.get(id=int(track_id))
-            old_music_title = track.music_title
-            old_artist_name = track.artist_name
-            #if name and artist are same in editing
-            if old_artist_name == artist_name and old_music_title == music_title:
+            try:
+                track.genre.clear()
+                try:
+                    for genre in genres:
+                        genre = Genre.objects.get(id=int(genre))
+                        track.genre.add(genre)
+                    track.save()
+                    message = "Genres Updated"
+                    data = {"success": True, "message": message}
+                except Exception, e:
+                    print e
+                    message = "Track updated without  genres"
+                    data = {"success": False, "message": message}
                 track.ratings = ratings
                 track.save()
-                track.genre.clear()
-                for genre in genres:
-                    genre = Genre.objects.get(id=int(genre))
-                    track.genre.add(genre)
+                track.music_title = music_title
+                track.artist_name = artist_name
+                # print "Saving artist and title"
                 track.save()
-                message = "Track updated with  genres"
+                message = "Track updated with  genres."
+                # print "message::", message
                 data = {"success": True, "message": message}
-                data = json.dumps(data)
-                return HttpResponse(data, content_type="application/json")
-            else:
-                try:
-                    track = MusicTrack.objects.get(artist_name=artist_name, music_title=music_title)
-                    message = "Track and Already Exists"
-                    data = {"success": False, "message": message}
-                    data = json.dumps(data)
-                    return HttpResponse(data, content_type="application/json")
-
-                except Exception, e:
-                    print "Exception:", e
-                    try:
-                        track = MusicTrack.objects.get(id=int(track_id))
-                        track.music_title = music_title
-                        track.artist_name = artist_name
-                        track.ratings = ratings
-                        track.save()
-                        try:
-                            track.genre.clear()
-                            for genre in genres:
-                                genre = Genre.objects.get(id=int(genre))
-                                track.genre.add(genre)
-                            track.save()
-                            message = "Track updated with  genres"
-                            data = {"success": True, "message": message}
-                            data = json.dumps(data)
-                            return HttpResponse(data, content_type="application/json")
-
-                        except Exception, e:
-                            data = {"success": False, "message": "Error in adding genres to track"}
-                            data = json.dumps(data)
-                            return HttpResponse(data, content_type="application/json")
-
-                    except Exception,e:
-                        print "Exception:", e
-                        message = "Track cannot be saved (without genres)"
-                        data = {"success": False, "message": message}
-                        data = json.dumps(data)
-                        return HttpResponse(data, content_type="application/json")
-
+            except Exception, e:
+                print "Exception", e
+                message = "Track and Artist Already Exists."
+                data = {"success": True, "message": message}
         else:
             data = {"success": False, "message": errors[0]}
-            data = json.dumps(data)
-            return HttpResponse(data, content_type="application/json")
 
     else:
         data = {"success": False, "message": "User is not authenticated"}
-        data = json.dumps(data)
-        return HttpResponse(data, content_type="application/json")
+
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 @csrf_exempt
 def add_track(request):
@@ -179,30 +136,10 @@ def add_track(request):
         artist_name = data.get("artist_name")
         ratings = data.get("ratings")
         genres = data.getlist('genres')
-        pass
         errors = []
-        if music_title is None or music_title.strip() == '':
-            err_msg = "Track's title is Required"
-            errors.append(err_msg)
-
-        if artist_name is None or artist_name.strip() == '':
-            err_msg = "Artist Name is Required"
-            errors.append(err_msg)
-
-        if ratings is None or ratings.strip() == '':
-            err_msg = "Rating is Required"
-            errors.append(err_msg)
-
-        if len(genres) == 0:
-            err_msg = "At least one genre is required"
-            errors.append(err_msg)
-
-        if len(request.FILES) > 1:
-           err_msg = "More than one file not allowed"
-           errors.append(err_msg)
-
-
-        if len(errors) == 0:
+        is_valid_track, errors = utils.is_track_details_valid(music_title=music_title, ratings=ratings,
+                                      artist_name=artist_name, genres=genres)
+        if is_valid_track == 1:
             music_title = music_title.lower()
             artist_name = artist_name.lower()
             ratings = float(ratings)
@@ -210,8 +147,6 @@ def add_track(request):
                 track = MusicTrack.objects.get(artist_name=artist_name, music_title = music_title)
                 message = "Track Already Exists"
                 data = {"success": False, "message": message}
-                data = json.dumps(data)
-                return HttpResponse(data, content_type="application/json")
             except Exception, e:
                 print "Exception:", e
                 try:
@@ -225,31 +160,27 @@ def add_track(request):
                         track.save()
                         message = "Track saved with  genres"
                         data = {"success": True, "message": message}
-                        data = json.dumps(data)
-                        return HttpResponse(data, content_type="application/json")
 
                     except Exception, e:
                         print "Exception", e
                         data = {"success": False, "message": "Error in adding genres to track"}
-                        data = json.dumps(data)
-                        return HttpResponse(data, content_type="application/json")
+
 
                 except Exception,e:
                     print "Exception:", e
                     message = "Track cannot be saved (without genres)"
                     data = {"success": False, "message": message}
-                    data = json.dumps(data)
-                    return HttpResponse(data, content_type="application/json")
+
 
         else:
             data = {"success": False, "message": errors[0]}
-            data = json.dumps(data)
-            return HttpResponse(data, content_type="application/json")
+
 
     else:
         data = {"success": False, "message": "User is not authenticated"}
-        data = json.dumps(data)
-        return HttpResponse(data, content_type="application/json")
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
+
 
 @csrf_exempt
 def edit_genre(request):
@@ -260,34 +191,25 @@ def edit_genre(request):
         genre_id = data.get("genre_id")
         genre_name = data.get("genre_name")
         errors = []
-        if genre_name is None or genre_name.strip() == '':
-            err_msg = "Genre Name is Required"
-            errors.append(err_msg)
-
-        if len(errors) == 0:
+        is_valid_genre, errors = utils.is_genre_details_valid(genre_id=genre_id, genre_name=genre_name)
+        if is_valid_genre == 1:
             genre_name = genre_name.strip().lower()
             try:
-                genre = Genre.objects.get(genre_name=genre_name)
-            except Exception, e:
-                print "Exception:", e
                 genre = Genre.objects.get(id=int(genre_id))
                 genre.genre_name = genre_name
                 genre.save()
                 message = "Genre renamed and saved."
                 data = {"success": True, "message": message}
-                data = json.dumps(data)
-                return HttpResponse(data, content_type="application/json")
-                # redirect("/greedymusic/genre")
-
+            except Exception, e:
+                print e
+                message = "Genre with this name already exists."
+                data = {"success": False, "message": message}
         else:
             data = {"success": False, "message": errors[0]}
-            data = json.dumps(data)
-            return HttpResponse(data, content_type="application/json")
-
     else:
         data = {"success": False, "message": "User is not authenticated"}
-        data = json.dumps(data)
-        return HttpResponse(data, content_type="application/json")
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 
 @csrf_exempt
@@ -298,36 +220,26 @@ def add_genre(request):
         data = request.POST
         genre_name = data.get("genre_name")
         errors = []
-        if genre_name is None or genre_name.strip() == '':
-            err_msg = "Genre Name is Required"
-            errors.append(err_msg)
-        if len(errors) == 0:
+        is_valid_genre, errors = utils.is_genre_details_valid(genre_name=genre_name)
+        if is_valid_genre == 1:
             genre_name = genre_name.lower()
-        try:
-                genre = Genre.objects.get(genre_name=genre_name)
-        except Exception, e:
-                print "Exception", e
-                try:
-                    genre = Genre(genre_name=genre_name, user = user)
-                    genre.save()
-                except Exception,e:
-                    print "Exception:", e
-                    return
+            try:
+                genre = Genre(genre_name=genre_name, user=user)
+                genre.save()
                 message = "Genre created and saved."
                 data = {"success": True, "message": message}
-                data = json.dumps(data)
-                return HttpResponse(data, content_type="application/json")
-                # redirect("/greedymusic/genre")
+            except Exception, e:
+                print "Exception", e
+                message = "Genre already exists."
+                data = {"success": False, "message": message}
 
         else:
             data = {"success": False, "message": errors[0]}
-            data = json.dumps(data)
-            return HttpResponse(data, content_type="application/json")
 
     else:
         data = {"success": False, "message": "User is not authenticated"}
-        data = json.dumps(data)
-        return HttpResponse(data, content_type="application/json")
+    data = json.dumps(data)
+    return HttpResponse(data, content_type="application/json")
 
 
 def view_all_genre(request):
@@ -376,7 +288,7 @@ def register_user(request):
         message = "User Already Registered"
     except Exception, e:
         print "Exception:", e
-        user = User(username=email, first_name=first_name, last_name=last_name, email=email )
+        user = User(username=   email, first_name=first_name, last_name=last_name, email=email )
         user.set_password(password)
         user.save()
         message = "User Registered"
@@ -396,12 +308,11 @@ def login_user(request):
     if user is None:
         message = "Invalid Credentials"
         data =json.dumps({"success": False, "message": message})
-        return HttpResponse(data, content_type="application/json")
     else:
         message = "User Looged in"
         data =json.dumps({"success": True, "message": message})
         login(request, user)
-        return HttpResponse(data, content_type="application/json")
+    return HttpResponse(data, content_type="application/json")
 
 @csrf_exempt
 def logout_user(request):
