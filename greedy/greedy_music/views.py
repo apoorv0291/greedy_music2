@@ -43,7 +43,7 @@ def search_tracks(request):
 
 #viewing all genres and adding a new genre
 @csrf_exempt
-def view_all_genre(request):
+def view_all_create_genre(request):
 
     user = request.user
     if request.method == 'GET':
@@ -87,7 +87,7 @@ def view_all_genre(request):
 
 @csrf_exempt
 # for genre details and edit genre
-def genre_details(request, genre_id):
+def genre_details_edit(request, genre_id):
 
     if genre_id:
         genre_id = int(genre_id)
@@ -133,7 +133,7 @@ def genre_details(request, genre_id):
 
 @csrf_exempt
 # for viewing all tracks and adding new tracks
-def view_all_music_tracks(request):
+def view_all_create_music_tracks(request):
     user = request.user
     if request.method == 'GET':
         music_tracks = MusicTrack.objects.all()
@@ -192,7 +192,7 @@ def view_all_music_tracks(request):
 
 @csrf_exempt
 #for editing track and viewing specific  track
-def track_details(request, track_id):
+def track_details_edit(request, track_id):
     print "in track_details"
     track_id = int(track_id)
     user = request.user

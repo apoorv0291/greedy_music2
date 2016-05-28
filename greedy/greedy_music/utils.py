@@ -35,7 +35,6 @@ def is_rating_valid(rating):
 
 def is_track_details_valid(**track_details):
 
-    print "is_track_details_valid"
     track_id = track_details.get("track_id")
     music_title = track_details.get("music_title")
     artist_name = track_details.get("artist_name")
@@ -45,7 +44,6 @@ def is_track_details_valid(**track_details):
     if track_id:
         if track_id.isdigit():
             try:
-                print "track_id", track_id
                 track = MusicTrack.objects.get(id=int(track_id))
             except Exception, e:
                 print e
@@ -75,20 +73,17 @@ def is_track_details_valid(**track_details):
     is_valid = False
     if len(errors) == 0:
         is_valid = True
-    print "Errorrrrs:", errors
     return is_valid, errors
 
 
 def is_genre_details_valid(**genre_details):
 
-    print " In is_genre_details_valid"
     genre_id = genre_details.get("genre_id")
     genre_name = genre_details.get("genre_name")
     errors = []
     if genre_id:
         if genre_id.isdigit():
             try:
-                print "genre_id", genre_id
                 track = Genre.objects.get(id=int(genre_id))
             except Exception, e:
                 print e
@@ -106,5 +101,4 @@ def is_genre_details_valid(**genre_details):
     is_valid = False
     if len(errors) == 0:
         is_valid = True
-    print "Errorrrrs:", errors
     return is_valid, errors
