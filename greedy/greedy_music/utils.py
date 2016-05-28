@@ -1,5 +1,20 @@
 from greedy_music.models import *
 
+def data_from_post_genre(genre):
+    genre_name = genre.get('genre_name')
+    genre_id = genre.get('genre_id')
+    return genre_id, genre_name
+
+
+def data_from_post_music_track(track):
+
+    track_id = track.get('track_id')
+    artist_name = track.get('artist_name')
+    music_title = track.get('music_title')
+    ratings = track.get('ratings')
+    genres = track.getlist('genres')
+    return track_id, music_title, artist_name,  ratings, genres
+
 
 def is_string_none_or_empty(name):
     if name is None or name.strip().lower() == '':
